@@ -165,7 +165,13 @@
 <body>
 
     <div class="position-absolute top-0 start-0 m-4">
-        <img src="{{ asset('images/logo.png') }}" class="logo" alt="Logo PT INTI">
+        <a href="https://www.inti.co.id/"
+        target="_blank"
+        title="PT INTI (Persero)">
+            <img src="{{ asset('images/logo.png') }}"
+                class="logo"
+                alt="Logo PT INTI">
+        </a>
     </div>
 
     <div class="container vh-100 d-flex justify-content-center align-items-center">
@@ -248,7 +254,7 @@
     <footer class="position-fixed bottom-0 start-50 translate-middle-x mb-3">
         <small>
             © 2026 • Designed & Developed by
-            <a href="https://github.com/supgeesashere"
+            <a href="https://github.com/giselaskp"
                target="_blank"
                class="fw-bold text-decoration-none"
                style="color:#7DD3FC;">

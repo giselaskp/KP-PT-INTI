@@ -44,8 +44,8 @@ class AssetController extends Controller
         $request->validate([
             'asset_code' => 'required|max:20|unique:assets,asset_code',
             'asset_name' => 'required|max:100',
-            'department' => 'required|max:20',
-            'location' => 'required|max:20',
+            'department' => 'required|max:100',
+            'location' => 'required|max:150',
             'status' => 'required|in:Active,Maintenance,Inactive',
         ], [
             'asset_code.required' => 'Asset code wajib diisi.',
