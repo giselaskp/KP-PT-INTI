@@ -7,23 +7,35 @@ use Illuminate\Http\Request;
 
 class AssetController extends Controller
 {
-    public function index()
-    {
-        $assets = Asset::latest()->get();
+    public function index(Request $request)
+{
+    $search = $request->search;
 
-        $totalAsset = Asset::count();
-        $totalDepartment = Asset::distinct('department')->count('department');
-        $activeAsset = Asset::where('status', 'Active')->count();
-        $maintenanceAsset = Asset::where('status', 'Maintenance')->count();
+    $assets = Asset::when($search, function ($query) use ($search) {
+        $query->where('asset_code', 'like', "%{$search}%")
+              ->orWhere('asset_name', 'like', "%{$search}%")
+              ->orWhere('department', 'like', "%{$search}%")
+              ->orWhere('location', 'like', "%{$search}%")
+              ->orWhere('status', 'like', "%{$search}%");
+    })
+    ->latest()
+    ->paginate(5)
+    ->withQueryString();
 
-        return view('dashboard', compact(
-            'assets',
-            'totalAsset',
-            'totalDepartment',
-            'activeAsset',
-            'maintenanceAsset'
-        ));
-    }
+    $totalAsset = Asset::count();
+    $totalDepartment = Asset::distinct('department')->count('department');
+    $activeAsset = Asset::where('status', 'Active')->count();
+    $maintenanceAsset = Asset::where('status', 'Maintenance')->count();
+
+    return view('dashboard', compact(
+        'assets',
+        'search',
+        'totalAsset',
+        'totalDepartment',
+        'activeAsset',
+        'maintenanceAsset'
+    ));
+}
 
     public function store(Request $request)
     {
