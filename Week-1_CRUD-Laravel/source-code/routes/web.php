@@ -13,8 +13,8 @@ Route::get('/register', [AuthController::class, 'showRegister']);
 Route::post('/register', [AuthController::class, 'register']);
 
 Route::get('/dashboard', [AssetController::class, 'index'])->middleware('auth');
-Route::post('/assets', [AssetController::class, 'store'])->middleware('auth');
-Route::put('/assets/{asset}', [AssetController::class, 'update'])->middleware('auth');
+Route::post('/assets', [AssetController::class, 'store']) ->middleware('auth') ->name('assets.store');
+Route::put('/assets/{asset}', [AssetController::class, 'update']) ->middleware('auth') ->name('assets.update');
 Route::delete('/assets/{asset}', [AssetController::class, 'destroy']) ->middleware('auth') ->name('assets.destroy');
 
 Route::post('/logout', [AuthController::class, 'logout']);

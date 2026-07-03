@@ -2,30 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Register | CRUD System</title>
+    <title>Register | Asset Management</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Bootstrap dari CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Bootstrap Icons dari CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
         body {
             min-height: 100vh;
             background:
-                linear-gradient(
-                    rgba(41, 118, 255, .70),
-                    rgba(25, 42, 86, .82)
-                ),
-                radial-gradient(
-                    circle at top right,
-                    rgba(0, 198, 255, .25),
-                    transparent 45%
-                ),
+                linear-gradient(rgba(41, 118, 255, .66), rgba(15, 46, 110, .86)),
+                radial-gradient(circle at top right, rgba(0, 198, 255, .25), transparent 45%),
                 url("{{ asset('images/gedung.png') }}");
-
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -37,11 +26,7 @@
             content: "";
             position: fixed;
             inset: 0;
-            background: radial-gradient(
-                circle at top right,
-                rgba(0, 198, 255, .20),
-                transparent 40%
-            );
+            background: radial-gradient(circle at top right, rgba(0,198,255,.22), transparent 40%);
             pointer-events: none;
         }
 
@@ -56,21 +41,29 @@
             transform: scale(1.05);
         }
 
-        .register-card {
-            width: 450px;
-            border-radius: 22px;
-            background: rgba(255, 255, 255, .94);
-            backdrop-filter: blur(14px);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, .20);
+        .auth-card {
+            width: 500px;
+            border-radius: 28px;
+            background: rgba(255, 255, 255, .23);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            border: 1px solid rgba(255, 255, 255, .35);
+            box-shadow: 0 25px 70px rgba(0, 0, 0, .24);
             animation: fadeUp .8s ease;
             position: relative;
             z-index: 2;
+            transition: .35s ease;
+        }
+
+        .auth-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, .28);
         }
 
         @keyframes fadeUp {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(28px);
             }
 
             to {
@@ -79,26 +72,44 @@
             }
         }
 
-        .title {
-            color: #311B92;
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 18px;
+            border-radius: 999px;
+            background: rgba(255,255,255,.18);
+            border: 1px solid rgba(255,255,255,.24);
+            color: white;
+            font-size: 13px;
             font-weight: 700;
             letter-spacing: .5px;
         }
 
+        .title {
+            color: white;
+            font-weight: 800;
+            letter-spacing: .4px;
+        }
+
         .subtitle {
-            color: #6c757d;
+            color: rgba(255,255,255,.80);
+        }
+
+        .form-label {
+            color: white;
         }
 
         .input-group-text {
-            background: white;
+            background: rgba(255,255,255,.94);
             border-right: none;
-            color: #6c757d;
+            color: #64748B;
             height: 48px;
         }
 
         .form-control {
             height: 48px;
             border-left: none;
+            background: rgba(255,255,255,.94);
         }
 
         .form-control:focus {
@@ -111,42 +122,41 @@
             cursor: pointer;
         }
 
-        .btn-register {
+        .btn-auth {
             height: 50px;
-            border-radius: 12px;
-            font-weight: 600;
+            border-radius: 14px;
+            font-weight: 700;
             color: white;
             border: none;
-            background: linear-gradient(
-                135deg,
-                #311B92,
-                #4527A0,
-                #039BE5
-            );
-            transition: .3s;
+            background: linear-gradient(135deg, #214A9B, #2F63C7, #039BE5);
+            transition: .3s ease;
         }
 
-        .btn-register:hover {
+        .btn-auth:hover {
             color: white;
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(69, 39, 160, .35);
+            box-shadow: 0 12px 30px rgba(3, 155, 229, .30);
         }
 
-        .login-link {
-            color: #039BE5;
-            font-weight: 600;
+        .auth-link {
+            color: #7DD3FC;
+            font-weight: 700;
             text-decoration: none;
         }
 
-        .login-link:hover {
-            color: #311B92;
+        .auth-link:hover {
+            color: white;
+        }
+
+        .helper-text {
+            color: rgba(255,255,255,.88);
         }
 
         footer {
             position: relative;
             z-index: 2;
             color: white;
-            opacity: .85;
+            opacity: .9;
             letter-spacing: .3px;
         }
     </style>
@@ -154,18 +164,19 @@
 
 <body>
 
-    <!-- Logo -->
     <div class="position-absolute top-0 start-0 m-4">
         <img src="{{ asset('images/logo.png') }}" class="logo" alt="Logo PT INTI">
     </div>
 
-    <!-- Register Card -->
     <div class="container vh-100 d-flex justify-content-center align-items-center">
-        <div class="card register-card border-0 p-4">
+        <div class="auth-card border-0 p-4">
             <div class="card-body">
 
-                <h3 class="title text-center mb-2">Create Account</h3>
-                <p class="subtitle text-center mb-4">Register your new account</p>
+                <div class="text-center mb-4">
+                    <span class="brand-badge">PT INTI (Persero)</span>
+                    <h2 class="title mt-3 mb-2">Get Started</h2>
+                    <p class="subtitle mb-0">Create your administrator account</p>
+                </div>
 
                 @if ($errors->any())
                     <div class="alert alert-danger py-2">
@@ -182,7 +193,7 @@
                             <span class="input-group-text">
                                 <i class="bi bi-person"></i>
                             </span>
-                            <input type="text" name="name" class="form-control" id="fullName" placeholder="Enter your full name" value="{{ old('name') }}" autocomplete="name" required>
+                            <input type="text" name="name" class="form-control" id="fullName" placeholder="Gisela S.K.P." value="{{ old('name') }}" autocomplete="name" required>
                         </div>
                     </div>
 
@@ -192,7 +203,7 @@
                             <span class="input-group-text">
                                 <i class="bi bi-envelope"></i>
                             </span>
-                            <input type="email" name="email" class="form-control" placeholder="Enter your email" value="{{ old('email') }}" autocomplete="email" required>
+                            <input type="email" name="email" class="form-control" placeholder="name@company.com" value="{{ old('email') }}" autocomplete="email" required>
                         </div>
                     </div>
 
@@ -208,7 +219,7 @@
                                 name="password"
                                 class="form-control"
                                 id="password"
-                                placeholder="Create your password"
+                                placeholder="Minimum 8 characters"
                                 required>
 
                             <button
@@ -220,28 +231,27 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-register w-100 mt-2">
+                    <button type="submit" class="btn btn-auth w-100 mt-2">
                         Register
                     </button>
                 </form>
 
-                <p class="text-center mt-4 mb-0">
+                <p class="helper-text text-center mt-4 mb-0">
                     Already have an account?
-                    <a href="/login" class="login-link">Login</a>
+                    <a href="/login" class="auth-link">Login</a>
                 </p>
 
             </div>
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="position-fixed bottom-0 start-50 translate-middle-x mb-3">
         <small>
             © 2026 • Designed & Developed by
             <a href="https://github.com/supgeesashere"
                target="_blank"
                class="fw-bold text-decoration-none"
-               style="color:#00C6FF;">
+               style="color:#7DD3FC;">
                 <i class="bi bi-github me-1"></i>supgeesashere
             </a>
         </small>

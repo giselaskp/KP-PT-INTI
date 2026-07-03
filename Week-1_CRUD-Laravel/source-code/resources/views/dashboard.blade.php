@@ -213,6 +213,40 @@
             margin-top: 24px;
         }
 
+        .auto-alert {
+            animation: fadeAlert 4s ease forwards;
+        }
+
+        .modal-alert{
+            border-radius:14px;
+            font-size:15px;
+            padding:14px 18px;
+        }
+
+        .modal-action-btn{
+            min-width:130px;
+            height:48px;
+            border-radius:12px;
+            font-weight:600;
+        }
+
+        @keyframes fadeAlert {
+            0%{
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            75%{
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            100%{
+                opacity: 0;
+                transform: translateY(-12px);
+            }
+        }
+
         .search-box {
             position: relative;
             max-width: 300px;
@@ -262,28 +296,39 @@
 
         .clear-search {
             position:absolute;
-            right:12px;
+            right:10px;
             top:50%;
             transform:translateY(-50%);
-            width:26px;
-            height:26px;
+            width:34px;
+            height:34px;
             border:none;
             border-radius:50%;
             background:#F1F5F9;
-            color:#64748B;
+            color:#2563EB;
             display:none;
             align-items:center;
             justify-content:center;
-            font-size:11px;
+            font-size:14px;
+            line-height: 1;
+            cursor: pointer;
+            z-index: 3;
+            transition: .25s ease;
+        }
+
+        .clear-search i {
+            position: static;
+            transform: none;
+            color: inherit;
+            font-size: 14px;
         }
 
         .clear-search:hover {
-            background: #E2E8F0;
+            background: #E0ECFF;
             color: #214A9B;
         }
 
         .search-box input {
-            padding-right: 38px;
+            padding-right: 52px;
         }
 
         .btn-main {
@@ -316,6 +361,7 @@
                 transparent
             );
             transition:.7s;
+            pointer-events: none;
         }
 
         .btn-main:hover::before{
@@ -387,6 +433,20 @@
             font-size:40px;
         }
 
+        .btn-delete{
+            background:linear-gradient(135deg, #B91C1C, #DC2626, #EF4444);
+            color:white;
+            border:none;
+            transition:.3s ease;
+        }
+
+        .btn-delete:hover{
+            background:linear-gradient(135deg, #991B1B, #B91C1C, #DC2626);
+            color:white;
+            transform:translateY(-2px);
+            box-shadow:0 10px 25px rgba(220,38,38,.22);
+        }
+
         .asset-preview{
             background:#F8FAFC;
             border-radius:12px;
@@ -411,8 +471,8 @@
             display:flex;
             justify-content: space-between;
             align-items: center;
+            width: 100%;
             margin-top: 24px;
-            flex-wrap: wrap;
             gap: 18px;
         }
 
@@ -420,6 +480,11 @@
             color: #64748B;
             font-size: 14px;
             font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .pagination-links {
+            margin-left: auto;
         }
 
         .pagination {
@@ -468,6 +533,22 @@
         }
 
         @media (max-width: 992px) {
+            .pagination-wrapper {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: nowrap;
+            }
+
+            .pagination-info {
+                font-size: 14px;
+                white-space: nowrap;
+            }
+
+            .pagination {
+                margin-left: auto;
+            }
+
             .sidebar {
                 transform: translateX(-100%);
             }
@@ -590,35 +671,24 @@
 
         <div class="sidebar-divider"></div>
 
-        <p class="sidebar-title">MENU</p>
-
         <nav class="sidebar-menu">
             <a href="/dashboard" class="active">
-                <i class="bi bi-grid"></i> Dashboard
-            </a>
-
-            <a href="#">
-                <i class="bi bi-box-seam"></i> Data Asset
-            </a>
-
-            <a href="#">
-                <i class="bi bi-building"></i> Department
-            </a>
-
-            <a href="#">
-                <i class="bi bi-file-earmark-text"></i> Report
+                <i class="bi bi-box-seam"></i>
+                Asset Inventory
             </a>
         </nav>
 
         <div class="position-absolute bottom-0 start-0 w-100 p-4">
             <div class="sidebar-divider"></div>
 
-            <form action="/logout" method="POST">
-                @csrf
-                <button type="submit" class="logout-btn">
-                    <i class="bi bi-box-arrow-left"></i> Logout
-                </button>
-            </form>
+            <button
+                type="button"
+                class="logout-btn"
+                data-bs-toggle="modal"
+                data-bs-target="#logoutModal">
+                <i class="bi bi-box-arrow-left"></i>
+                Logout
+            </button>
         </div>
     </aside>
 
@@ -626,14 +696,14 @@
     <main class="main-content">
 
     @if (session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <div class="alert alert-success alert-dismissible fade show auto-alert" role="alert">
             {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif
 
     @if ($errors->any())
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <div class="alert alert-danger alert-dismissible fade show auto-alert" role="alert">
             {{ $errors->first() }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
@@ -750,192 +820,184 @@
                 </div>
             </div>
 
-            <div id="assetTableArea">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Asset ID</th>
-                                <th>Asset Name</th>
-                                <th>Department</th>
-                                <th>Location</th>
-                                <th>Status</th>
-                                <th class="text-center">Action</th>
-                            </tr>
-                        </thead>
+        <div id="assetTableArea">
 
-                        <tbody>
-                            @forelse($assets as $asset)
-                                <tr>
-                                    <td>{{ $asset->asset_code }}</td>
-                                    <td>{{ $asset->asset_name }}</td>
-                                    <td>{{ $asset->department }}</td>
-                                    <td>{{ $asset->location }}</td>
-                                    <td>
-                                        @if($asset->status == 'Active')
-                                            <span class="badge-active">Active</span>
-                                        @elseif($asset->status == 'Maintenance')
-                                            <span class="badge bg-warning text-dark rounded-pill px-3 py-2">
-                                                Maintenance
-                                            </span>
-                                        @else
-                                            <span class="badge bg-secondary rounded-pill px-3 py-2">
-                                                Inactive
-                                            </span>
-                                        @endif
-                                    </td>
-                                    <td class="text-center">
-                                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editAssetModal{{ $asset->id }}">
-                                            <i class="bi bi-pencil"></i>
-                                        </button>
-                                        <button
-                                            type="button"
-                                            class="btn btn-sm btn-outline-danger"
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Asset ID</th>
+                            <th>Asset Name</th>
+                            <th>Department</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @forelse($assets as $asset)
+                            <tr>
+                                <td>{{ $asset->asset_code }}</td>
+                                <td>{{ $asset->asset_name }}</td>
+                                <td>{{ $asset->department }}</td>
+                                <td>{{ $asset->location }}</td>
+                                <td>
+                                    @if($asset->status == 'Active')
+                                        <span class="badge-active">Active</span>
+                                    @elseif($asset->status == 'Maintenance')
+                                        <span class="badge bg-warning text-dark rounded-pill px-3 py-2">
+                                            Maintenance
+                                        </span>
+                                    @else
+                                        <span class="badge bg-secondary rounded-pill px-3 py-2">
+                                            Inactive
+                                        </span>
+                                    @endif
+                                </td>
+
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-outline-primary"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#editAssetModal{{ $asset->id }}">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+
+                                    <button class="btn btn-sm btn-outline-danger"
                                             data-bs-toggle="modal"
                                             data-bs-target="#deleteModal{{ $asset->id }}">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-
-                                <!-- Delete Modal -->
-                                <div class="modal fade"
-                                    id="deleteModal{{ $asset->id }}"
-                                    tabindex="-1"
-                                    aria-hidden="true">
-
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content border-0 rounded-4 shadow">
-                                            <div class="modal-header border-0 pb-0">
-                                                <h4 class="modal-title fw-bold text-danger">
-                                                    <i class="bi bi-trash3-fill me-2"></i>
-                                                    Delete Asset
-                                                </h4>
-                                                <button
-                                                    class="btn-close"
-                                                    data-bs-dismiss="modal">
-                                                </button>
-                                            </div>
-
-                                            <div class="modal-body text-center py-4">
-                                                <div class="mb-3">
-                                                    <div class="delete-icon">
-                                                        <i class="bi bi-exclamation-lg"></i>
-                                                    </div>
-                                                </div>
-                                                <h5 class="fw-semibold">
-                                                    Delete Asset
-                                                </h5>
-                                                <p class="text-secondary mb-1">
-                                                    You are about to delete this asset.
-                                                </p>
-                                                <div class="asset-preview mt-3">
-                                                    <strong>{{ $asset->asset_name }}</strong>
-                                                </div>
-                                                <small class="text-danger">
-                                                    This action cannot be undone.
-                                                </small>
-                                            </div>
-
-                                            <div class="modal-footer border-0 justify-content-center">
-                                                <button
-                                                    class="btn btn-light px-4"
-                                                    data-bs-dismiss="modal">
-                                                    Cancel
-                                                </button>
-                                                <form
-                                                    action="{{ route('assets.destroy',$asset->id) }}"
-                                                    method="POST">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button
-                                                        type="submit"
-                                                        class="btn btn-danger px-4">
-                                                        Delete
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="modal fade" id="editAssetModal{{ $asset->id }}" tabindex="-1" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content border-0 rounded-4">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title fw-bold">Edit Asset</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                            </div>
-
-                                            <form action="/assets/{{ $asset->id }}" method="POST">
-                                                @csrf
-                                                @method('PUT')
-
-                                                <div class="modal-body">
-                                                    <div class="mb-3">
-                                                        <label class="form-label fw-semibold">Asset Code</label>
-                                                        <input type="text" name="asset_code" class="form-control" value="{{ $asset->asset_code }}" required>
-                                                    </div>
-
-                                                    <div class="mb-3">
-                                                        <label class="form-label fw-semibold">Asset Name</label>
-                                                        <input type="text" name="asset_name" class="form-control" value="{{ $asset->asset_name }}" required>
-                                                    </div>
-
-                                                    <div class="mb-3">
-                                                        <label class="form-label fw-semibold">Department</label>
-                                                        <input type="text" name="department" class="form-control" value="{{ $asset->department }}" required>
-                                                    </div>
-
-                                                    <div class="mb-3">
-                                                        <label class="form-label fw-semibold">Location</label>
-                                                        <input type="text" name="location" class="form-control" value="{{ $asset->location }}" required>
-                                                    </div>
-
-                                                    <div class="mb-3">
-                                                        <label class="form-label fw-semibold">Status</label>
-                                                        <select name="status" class="form-select" required>
-                                                            <option value="Active" {{ $asset->status == 'Active' ? 'selected' : '' }}>Active</option>
-                                                            <option value="Maintenance" {{ $asset->status == 'Maintenance' ? 'selected' : '' }}>Maintenance</option>
-                                                            <option value="Inactive" {{ $asset->status == 'Inactive' ? 'selected' : '' }}>Inactive</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                                                    <button type="submit" class="btn btn-main">Update Asset</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            @empty
-                                <tr>
-                                    <td colspan="6" class="text-center text-muted py-4">
-                                        Belum ada data asset.
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-
-                    @if ($assets->hasPages())
-                    <div class="pagination-wrapper">
-                        <div class="pagination-info">
-                            Showing
-                            {{ $assets->firstItem() }}
-                            -
-                            {{ $assets->lastItem() }}
-                            of
-                            {{ $assets->total() }}
-                            assets
-                        </div>
-                        {{ $assets->onEachSide(1)->links('pagination::bootstrap-5') }}
-                    </div>
-                    @endif
-                </div>
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">
+                                    Belum ada data asset.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
+
+            @if ($assets->hasPages())
+                <div class="pagination-wrapper">
+                    <div class="pagination-info">
+                        Showing {{ $assets->firstItem() }} - {{ $assets->lastItem() }} of {{ $assets->total() }} assets
+                    </div>
+
+                    <div class="pagination-links">
+                        {{ $assets->onEachSide(1)->links() }}
+                    </div>
+                </div>
+            @endif
+
+            @foreach($assets as $asset)
+
+                <!-- Edit Modal -->
+                <div class="modal fade" id="editAssetModal{{ $asset->id }}" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content border-0 rounded-4">
+
+                            <form action="{{ route('assets.update', $asset->id) }}" method="POST" class="asset-form" data-asset-id="{{ $asset->id }}" novalidate>
+                                @csrf
+                                @method('PUT')
+                                <div class="modal-header">
+                                    <h5 class="modal-title fw-bold">Edit Asset</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+
+                                <div class="modal-alert alert alert-danger d-none mx-4 mt-3 mb-0"></div>
+
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Asset Code</label>
+                                        <input type="text" name="asset_code" data-label="Asset Code" maxlength="20" class="form-control" value="{{ $asset->asset_code }}" required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Asset Name</label>
+                                        <input type="text" name="asset_name" data-label="Asset Name" maxlength="100" class="form-control" value="{{ $asset->asset_name }}" required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Department</label>
+                                        <input type="text" name="department" data-label="Department" maxlength="20" class="form-control" value="{{ $asset->department }}" required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Location</label>
+                                        <input type="text" name="location" data-label="Location" maxlength="20" class="form-control" value="{{ $asset->location }}" required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Status</label>
+                                        <select name="status" class="form-select" data-label="Status" required>
+                                            <option value="Active" {{ $asset->status == 'Active' ? 'selected' : '' }}>Active</option>
+                                            <option value="Maintenance" {{ $asset->status == 'Maintenance' ? 'selected' : '' }}>Maintenance</option>
+                                            <option value="Inactive" {{ $asset->status == 'Inactive' ? 'selected' : '' }}>Inactive</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-main">Update Asset</button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delete Modal -->
+                <div class="modal fade" id="deleteModal{{ $asset->id }}" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content border-0 rounded-4 shadow">
+
+                            <div class="modal-header border-0 pb-0">
+                                <h4 class="modal-title fw-bold text-danger">
+                                    Delete Asset
+                                </h4>
+                                <button class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+
+                            <div class="modal-body text-center py-4">
+                                <div class="delete-icon mb-3">
+                                    <i class="bi bi-exclamation-lg"></i>
+                                </div>
+
+                                <h5 class="fw-semibold">Delete Asset</h5>
+                                <p class="text-secondary mb-1">You are about to delete this asset.</p>
+
+                                <div class="asset-preview mt-3">
+                                    <strong>{{ $asset->asset_name }}</strong>
+                                </div>
+
+                                <small class="text-danger">This action cannot be undone.</small>
+                            </div>
+
+                            <div class="modal-footer border-0 justify-content-center">
+                                <button class="btn btn-light modal-action-btn" data-bs-dismiss="modal">
+                                    Cancel
+                                </button>
+                                <form action="{{ route('assets.destroy', $asset->id) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button type="submit" class="btn btn-delete modal-action-btn">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            @endforeach
+
         </div>
 
         <!-- Add Asset Modal -->
@@ -947,33 +1009,34 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
-                    <form action="/assets" method="POST">
+                    <form action="{{ route('assets.store') }}" method="POST" class="asset-form" novalidate>
                         @csrf
+                        <div class="modal-alert alert alert-danger d-none mx-4 mt-3 mb-0"></div>
 
                         <div class="modal-body">
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">Asset Code</label>
-                                <input type="text" name="asset_code" class="form-control" placeholder="Example: AST004" required>
+                                <input type="text" name="asset_code" class="form-control" placeholder="Example: AST004" data-label="Asset Code" maxlength="20" required>
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">Asset Name</label>
-                                <input type="text" name="asset_name" class="form-control" placeholder="Example: Laptop Dell Latitude" required>
+                                <input type="text" name="asset_name" class="form-control" placeholder="Example: Laptop Dell Latitude" data-label="Asset Name" maxlength="100" required>
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">Department</label>
-                                <input type="text" name="department" class="form-control" placeholder="Example: IT Support" required>
+                                <input type="text" name="department" class="form-control" placeholder="Example: IT Support" data-label="Department" maxlength="50" required>
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">Location</label>
-                                <input type="text" name="location" class="form-control" placeholder="Example: Gedung INTI Lt. 2" required>
+                                <input type="text" name="location" class="form-control" placeholder="Example: Gedung INTI Lt. 2" data-label="Location" maxlength="100" required>
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">Status</label>
-                                <select name="status" class="form-select" required>
+                                <select name="status" class="form-select" data-label="Status" required>
                                     <option value="Active">Active</option>
                                     <option value="Maintenance">Maintenance</option>
                                     <option value="Inactive">Inactive</option>
@@ -986,6 +1049,54 @@
                             <button type="submit" class="btn btn-main">Save Asset</button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logout Modal -->
+        <div class="modal fade"
+            id="logoutModal"
+            tabindex="-1"
+            aria-hidden="true">
+
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 rounded-4 shadow">
+                    <div class="modal-header border-0 pb-0">
+                        <h4 class="modal-title fw-bold">
+                            Logout
+                        </h4>
+                        <button
+                            class="btn-close"
+                            data-bs-dismiss="modal">
+                        </button>
+                    </div>
+
+                    <div class="modal-body text-center py-4">
+                        <h5 class="fw-semibold">
+                            Logout Session?
+                        </h5>
+                        <p class="text-secondary mb-0">
+                            Are you sure you want to logout from your account?
+                        </p>
+                    </div>
+
+                    <div class="modal-footer border-0 justify-content-center">
+                        <button
+                            type="button"
+                            class="btn btn-light modal-action-btn"
+                            data-bs-dismiss="modal">
+                            Cancel
+                        </button>
+
+                        <form action="/logout" method="POST">
+                            @csrf
+                            <button
+                                type="submit"
+                                class="btn btn-main modal-action-btn">
+                                Logout
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1094,6 +1205,63 @@
         });
 
         toggleClearButton();
+    </script>
+
+    <script>
+        setTimeout(() => {
+            document.querySelectorAll('.auto-alert').forEach(alert => {
+                const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+                bsAlert.close();
+            });
+        }, 4200);
+    </script>
+
+    <script>
+        const assetCodes = @json($assetCodes);
+
+        document.querySelectorAll('.asset-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const alertBox = form.querySelector('.modal-alert');
+                const assetCodeInput = form.querySelector('[name="asset_code"]');
+
+                let message = '';
+                let firstInvalidField = null;
+
+                form.querySelectorAll('[required]').forEach(field => {
+                    const label = field.dataset.label || field.name;
+
+                    if (!message && field.value.trim() === '') {
+                        message = `${label} wajib diisi.`;
+                        firstInvalidField = field;
+                    }
+
+                    if (!message && field.maxLength > 0 && field.value.length > field.maxLength) {
+                        message = `${label} maksimal ${field.maxLength} karakter.`;
+                        firstInvalidField = field;
+                    }
+                });
+
+                const assetCode = assetCodeInput.value.trim();
+                const currentId = form.dataset.assetId || null;
+
+                Object.entries(assetCodes).forEach(([id, code]) => {
+                    if (!message && code.toLowerCase() === assetCode.toLowerCase() && id !== currentId) {
+                        message = 'Asset Code sudah digunakan. Silakan gunakan kode lain.';
+                        firstInvalidField = assetCodeInput;
+                    }
+                });
+
+                if (message) {
+                    e.preventDefault();
+                    alertBox.textContent = message;
+                    alertBox.classList.remove('d-none');
+
+                    if (firstInvalidField) {
+                        firstInvalidField.focus();
+                    }
+                }
+            });
+        });
     </script>
 
 </body>
