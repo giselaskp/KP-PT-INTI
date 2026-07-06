@@ -31,10 +31,11 @@
 <div id="assetTableArea">
 
     <div class="table-responsive">
-    <table class="table table-hover align-middle">
+    <table class="table table-hover align-middle asset-table">
         <thead class="table-light">
             <tr>
                 <th>Asset ID</th>
+                <th>Image</th>
                 <th>Asset Name</th>
                 <th>Department</th>
                 <th>Location</th>
@@ -47,18 +48,36 @@
             @forelse($assets as $asset)
                 <tr>
                     <td>{{ $asset->asset_code }}</td>
+
+                    <td>
+                        @if($asset->image)
+                            <img
+                                src="{{ asset('storage/' . $asset->image) }}"
+                                alt="{{ $asset->asset_name }}"
+                                class="asset-img clickable-image"
+                                data-bs-toggle="modal"
+                                data-bs-target="#imagePreviewModal"
+                                data-image="{{ asset('storage/' . $asset->image) }}"
+                                data-title="{{ $asset->asset_name }}">
+                        @else
+                            <div class="asset-img-placeholder">
+                                <i class="bi bi-image"></i>
+                            </div>
+                        @endif
+                    </td>
+
                     <td>{{ $asset->asset_name }}</td>
                     <td>{{ $asset->department }}</td>
                     <td>{{ $asset->location }}</td>
                     <td>
                         @if($asset->status == 'Active')
-                            <span class="badge-active">Active</span>
+                            <span class="badge-active badge-status">Active</span>
                         @elseif($asset->status == 'Maintenance')
-                            <span class="badge bg-warning text-dark rounded-pill px-3 py-2">
+                            <span class="badge bg-warning text-dark rounded-pill px-3 py-2 badge-status">
                                 Maintenance
                             </span>
                         @else
-                            <span class="badge bg-secondary rounded-pill px-3 py-2">
+                            <span class="badge bg-secondary rounded-pill px-3 py-2 badge-status">
                                 Inactive
                             </span>
                         @endif
@@ -108,7 +127,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 rounded-4">
 
-                <form action="{{ route('assets.update', $asset->id) }}" method="POST" class="asset-form" data-asset-id="{{ $asset->id }}" novalidate>
+                <form action="{{ route('assets.update', $asset->id) }}?page={{ request('page', 1) }}" method="POST" enctype="multipart/form-data" class="asset-form" data-asset-id="{{ $asset->id }}" novalidate>
                     @csrf
                     @method('PUT')
                     <div class="modal-header">
@@ -146,6 +165,52 @@
                                 <option value="Maintenance" {{ $asset->status == 'Maintenance' ? 'selected' : '' }}>Maintenance</option>
                                 <option value="Inactive" {{ $asset->status == 'Inactive' ? 'selected' : '' }}>Inactive</option>
                             </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Asset Image</label>
+
+                            <input
+                                type="file"
+                                name="image"
+                                class="d-none image-input"
+                                id="editImage{{ $asset->id }}"
+                                accept="image/*">
+
+                            <input
+                                type="hidden"
+                                name="remove_image"
+                                class="remove-image-input"
+                                value="0">
+
+                            @if($asset->image)
+                                <div class="uploaded-image-wrapper">
+                                    <img
+                                        src="{{ asset('storage/'.$asset->image) }}"
+                                        class="uploaded-image">
+
+                                    <div class="image-overlay">
+                                        <label for="editImage{{ $asset->id }}" class="change-image">
+                                            <i class="bi bi-cloud-arrow-up-fill"></i>
+                                            <span>Change Image</span>
+                                        </label>
+
+                                        <button type="button" class="remove-image">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            @else
+                                <label for="editImage{{ $asset->id }}" class="upload-box">
+                                    <i class="bi bi-cloud-arrow-up"></i>
+                                    <h5>Drag & Drop new image here</h5>
+                                    <p>or click to choose file</p>
+                                </label>
+                            @endif
+
+                            <small class="text-muted">
+                                Leave empty if you don't want to change the image.
+                            </small>
                         </div>
                     </div>
 
@@ -190,7 +255,7 @@
                     <button class="btn btn-light modal-action-btn" data-bs-dismiss="modal">
                         Cancel
                     </button>
-                    <form action="{{ route('assets.destroy', $asset->id) }}" method="POST">
+                    <form action="{{ route('assets.destroy', $asset->id) }}?page={{ request('page', 1) }}" method="POST">
                         @csrf
                         @method('DELETE')
 
@@ -203,7 +268,36 @@
             </div>
         </div>
     </div>
-
 @endforeach
+
+<!-- Image Preview Modal -->
+<div class="modal fade"
+     id="imagePreviewModal"
+     tabindex="-1"
+     aria-hidden="true"
+     data-bs-backdrop="static"
+     data-bs-keyboard="false">
+
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 rounded-4">
+
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="imagePreviewTitle">
+                    Asset Image
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body text-center">
+                <img
+                    src=""
+                    id="imagePreviewModalImg"
+                    class="large-image-preview"
+                    alt="Asset Preview">
+            </div>
+
+        </div>
+    </div>
+</div>
 
 </div>

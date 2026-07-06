@@ -149,3 +149,148 @@ setInterval(updateDate, 60000);
         });
     });
 </script>
+
+<script>
+    function validateImage(file, input) {
+        const maxSize = 5 * 1024 * 1024;
+
+        if (!file) return false;
+
+        if (!file.type.startsWith("image/")) {
+            alert("Please select an image file.");
+            input.value = "";
+            return false;
+        }
+
+        if (file.size > maxSize) {
+            alert("Image size must not exceed 5 MB.");
+            input.value = "";
+            return false;
+        }
+
+        return true;
+    }
+
+    function renderImagePreview(input, file) {
+        const container = input.closest(".mb-3");
+        const uploadBox = container.querySelector(".upload-box");
+        const existingWrapper = container.querySelector(".uploaded-image-wrapper");
+        const removeInput = container.querySelector(".remove-image-input");
+        const imageUrl = URL.createObjectURL(file);
+
+        if (removeInput) {
+            removeInput.value = "0";
+        }
+
+        if (existingWrapper) {
+            existingWrapper.querySelector(".uploaded-image").src = imageUrl;
+            return;
+        }
+
+        if (uploadBox) {
+            uploadBox.remove();
+        }
+
+        container.insertAdjacentHTML("beforeend", `
+            <div class="uploaded-image-wrapper mt-3">
+                <img src="${imageUrl}" class="uploaded-image">
+
+                <div class="image-overlay">
+                    <label for="${input.id}" class="change-image">
+                        <i class="bi bi-cloud-arrow-up-fill"></i>
+                        <span>Change Image</span>
+                    </label>
+
+                    <button type="button" class="remove-image">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `);
+    }
+
+    document.addEventListener("change", function (e) {
+        if (!e.target.classList.contains("image-input")) return;
+
+        const input = e.target;
+        const file = input.files[0];
+
+        if (!validateImage(file, input)) return;
+
+        renderImagePreview(input, file);
+    });
+
+    document.addEventListener("click", function (e) {
+        const removeBtn = e.target.closest(".remove-image");
+        if (!removeBtn) return;
+
+        const wrapper = removeBtn.closest(".uploaded-image-wrapper");
+        const container = wrapper.closest(".mb-3");
+        const input = container.querySelector('input[type="file"]');
+        const removeInput = container.querySelector(".remove-image-input");
+
+        input.value = "";
+
+        if (removeInput) {
+            removeInput.value = "1";
+        }
+
+        wrapper.remove();
+
+        container.insertAdjacentHTML("beforeend", `
+            <label for="${input.id}" class="upload-box">
+                <i class="bi bi-cloud-arrow-up"></i>
+                <h5>Drag & Drop image here</h5>
+                <p>or click to choose file</p>
+            </label>
+        `);
+    });
+
+    document.addEventListener("dragover", function (e) {
+        const target = e.target.closest(".upload-box, .uploaded-image-wrapper");
+        if (!target) return;
+
+        e.preventDefault();
+        target.classList.add("dragover");
+    });
+
+    document.addEventListener("dragleave", function (e) {
+        const target = e.target.closest(".upload-box, .uploaded-image-wrapper");
+        if (!target) return;
+
+        target.classList.remove("dragover");
+    });
+
+    document.addEventListener("drop", function (e) {
+        const target = e.target.closest(".upload-box, .uploaded-image-wrapper");
+        if (!target) return;
+
+        e.preventDefault();
+        target.classList.remove("dragover");
+
+        const container = target.closest(".mb-3");
+        const input = container.querySelector('input[type="file"]');
+        const file = e.dataTransfer.files[0];
+
+        if (!input || !validateImage(file, input)) return;
+
+        input.files = e.dataTransfer.files;
+        renderImagePreview(input, file);
+    });
+</script>
+
+<script>
+    const imagePreviewModal = document.getElementById("imagePreviewModal");
+
+    if (imagePreviewModal) {
+        imagePreviewModal.addEventListener("show.bs.modal", function (event) {
+            const trigger = event.relatedTarget;
+
+            const image = trigger.getAttribute("data-image");
+            const title = trigger.getAttribute("data-title");
+
+            document.getElementById("imagePreviewModalImg").src = image;
+            document.getElementById("imagePreviewTitle").textContent = title;
+        });
+    }
+</script>

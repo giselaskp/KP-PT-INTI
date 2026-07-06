@@ -12,5 +12,6 @@ class Asset extends Model
         'department',
         'location',
         'status',
+        'image',
     ];
 }

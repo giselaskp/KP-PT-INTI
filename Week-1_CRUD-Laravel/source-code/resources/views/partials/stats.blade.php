@@ -18,11 +18,11 @@
         <div class="stat-card">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <small class="text-muted">Department</small>
-                    <h3 class="fw-bold mb-0">{{ $totalDepartment }}</h3>
+                    <small class="text-muted">Inactive Asset</small>
+                    <h3 class="fw-bold mb-0">{{ $inactiveAsset }}</h3>
                 </div>
                 <div class="icon-box">
-                    <i class="bi bi-building"></i>
+                    <i class="bi bi-x-circle"></i>
                 </div>
             </div>
         </div>

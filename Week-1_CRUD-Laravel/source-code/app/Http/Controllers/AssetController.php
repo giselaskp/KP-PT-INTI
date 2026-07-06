@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Asset;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AssetController extends Controller
 {
@@ -23,18 +24,19 @@ class AssetController extends Controller
     ->withQueryString();
 
     $totalAsset = Asset::count();
-    $totalDepartment = Asset::distinct('department')->count('department');
     $activeAsset = Asset::where('status', 'Active')->count();
     $maintenanceAsset = Asset::where('status', 'Maintenance')->count();
+    $inactiveAsset = Asset::where('status', 'Inactive')->count();
+
     $assetCodes = Asset::pluck('asset_code', 'id');
 
     return view('dashboard', compact(
         'assets',
         'search',
         'totalAsset',
-        'totalDepartment',
         'activeAsset',
         'maintenanceAsset',
+        'inactiveAsset',
         'assetCodes'
     ));
 }
@@ -47,6 +49,7 @@ class AssetController extends Controller
             'department' => 'required|max:100',
             'location' => 'required|max:150',
             'status' => 'required|in:Active,Maintenance,Inactive',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
         ], [
             'asset_code.required' => 'Asset code wajib diisi.',
             'asset_code.unique' => 'Asset code sudah digunakan.',
@@ -63,9 +66,25 @@ class AssetController extends Controller
 
             'status.required' => 'Status wajib dipilih.',
             'status.in' => 'Status tidak valid.',
+
+            'image.image' => 'File harus berupa gambar.',
+            'image.mimes' => 'Format gambar harus JPG, JPEG, atau PNG.',
+            'image.max' => 'Ukuran gambar maksimal 5 MB.',
         ]);
 
-        Asset::create($request->all());
+        $data = $request->only([
+            'asset_code',
+            'asset_name',
+            'department',
+            'location',
+            'status',
+        ]);
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('assets', 'public');
+        }
+
+        Asset::create($data);
 
         return redirect('/dashboard')->with('success', 'Asset berhasil ditambahkan.');
     }
@@ -78,6 +97,7 @@ class AssetController extends Controller
             'department' => 'required|max:100',
             'location' => 'required|max:150',
             'status' => 'required|in:Active,Maintenance,Inactive',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
         ], [
             'asset_code.required' => 'Asset code wajib diisi.',
             'asset_code.unique' => 'Asset code sudah digunakan.',
@@ -94,17 +114,41 @@ class AssetController extends Controller
 
             'status.required' => 'Status wajib dipilih.',
             'status.in' => 'Status tidak valid.',
+
+            'image.image' => 'File harus berupa gambar.',
+            'image.mimes' => 'Format gambar harus JPG, JPEG, atau PNG.',
+            'image.max' => 'Ukuran gambar maksimal 5 MB.',
         ]);
 
-        $asset->update($request->all());
+        $data = $request->only([ 'asset_code', 'asset_name', 'department', 'location', 'status']);
+        if ($request->remove_image == "1") {
+            if ($asset->image && Storage::disk('public')->exists($asset->image)) {
+                Storage::disk('public')->delete($asset->image);
+            }
 
-        return redirect('/dashboard')->with('success', 'Asset berhasil diperbarui.');
+            $data['image'] = null;
+        }
+
+        if ($request->hasFile('image')) {
+
+            if ($asset->image && Storage::disk('public')->exists($asset->image)) {
+                Storage::disk('public')->delete($asset->image);
+            }
+
+            $data['image'] = $request->file('image')->store('assets', 'public');
+        }
+
+        $asset->update($data);
+
+        return redirect('/dashboard?page=' . $request->query('page', 1))
+            ->with('success', 'Asset berhasil diperbarui.');
     }
 
     public function destroy(Asset $asset)
     {
         $asset->delete();
 
-        return redirect('/dashboard')->with('success', 'Asset berhasil dihapus.');
+        return redirect('/dashboard?page=' . request()->query('page', 1))
+            ->with('success', 'Asset berhasil dihapus.');
     }
 }

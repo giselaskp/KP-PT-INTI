@@ -210,6 +210,242 @@
             margin-top: 24px;
         }
 
+        .asset-table{
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        .asset-table th,
+        .asset-table td{
+            vertical-align: middle;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .asset-table th:nth-child(1),
+        .asset-table td:nth-child(1){
+            width: 10%;
+        }
+
+        .asset-table th:nth-child(2),
+        .asset-table td:nth-child(2){
+            width: 9%;
+        }
+
+        .asset-table th:nth-child(3),
+        .asset-table td:nth-child(3){
+            width: 23%;
+        }
+
+        .asset-table th:nth-child(4),
+        .asset-table td:nth-child(4){
+            width: 16%;
+        }
+
+        .asset-table th:nth-child(5),
+        .asset-table td:nth-child(5){
+            width: 17%;
+        }
+
+        .asset-table th:nth-child(6),
+        .asset-table td:nth-child(6){
+            width: 15%;
+        }
+
+        .asset-table th:nth-child(7),
+        .asset-table td:nth-child(7){
+            width: 12%;
+        }
+
+        .asset-table td:nth-child(6),
+        .asset-table th:nth-child(6){
+            text-align: center;
+        }
+
+        .badge-status{
+            min-width: 110px;
+            display: inline-flex;
+            justify-content: center;
+        }
+
+        .asset-img,
+        .asset-img-placeholder{
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            object-fit: cover;
+        }
+
+        .asset-img{
+            border: 1px solid #E2E8F0;
+        }
+
+        .asset-img-placeholder{
+            background: #F1F5F9;
+            color: #94A3B8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .upload-box{
+            border:2px dashed #CBD5E1;
+            border-radius:18px;
+            height:220px;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+            cursor:pointer;
+            color:#64748B;
+            transition:.3s;
+            background:#F8FAFC;
+            text-align:center;
+        }
+
+        .upload-box:hover,
+        .upload-box.dragover{
+            border-color:#2563EB;
+            background:#EFF6FF;
+        }
+
+        .upload-box i{
+            font-size:48px;
+            color:#2563EB;
+            margin-bottom:15px;
+        }
+
+        .upload-box h5{
+            font-size:18px;
+            font-weight:700;
+            color:#1F2937;
+            margin-bottom:6px;
+        }
+
+        .upload-box p{
+            font-size:15px;
+            color:#64748B;
+            margin-bottom:0;
+        }
+
+        .upload-box small{
+            color: #64748B;
+        }
+
+        .upload-box input{
+            display: none;
+        }
+
+        .uploaded-image-wrapper{
+            position:relative;
+            width:320px;
+            height:220px;
+            margin:auto;
+            border-radius:18px;
+            overflow:hidden;
+            border:1px solid #E2E8F0;
+            background:#F8FAFC;
+        }
+
+        .uploaded-image{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+            display:block;
+        }
+
+        .image-overlay{
+            position:absolute;
+            inset:0;
+            background:rgba(15,23,42,.60);
+            opacity:0;
+            transition:.3s ease;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+            gap:14px;
+        }
+
+        .uploaded-image-wrapper:hover .image-overlay{
+            opacity:1;
+        }
+
+        .change-image{
+            color:white;
+            cursor:pointer;
+            text-align:center;
+            font-size:17px;
+            font-weight:700;
+            text-decoration:none;
+        }
+
+        .change-image i{
+            display:block;
+            font-size:40px;
+            margin-bottom:10px;
+        }
+
+        .remove-image{
+            background:#EF4444;
+            color:white;
+            border:none;
+            border-radius:10px;
+            padding:8px 18px;
+            font-weight:600;
+            transition:.25s ease;
+        }
+
+        .remove-image:hover{
+            background:#DC2626;
+            transform:translateY(-1px);
+        }
+
+        .upload-box{
+            border:2px dashed #CBD5E1;
+            border-radius:18px;
+            height:220px;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+            cursor:pointer;
+            color:#64748B;
+            transition:.3s;
+        }
+
+        .upload-box:hover{
+            border-color:#2563EB;
+            background:#EFF6FF;
+        }
+
+        .upload-box i{
+            font-size:48px;
+            color:#2563EB;
+            margin-bottom:15px;
+        }
+
+        .clickable-image{
+            cursor:pointer;
+            transition:.25s ease;
+        }
+
+        .clickable-image:hover{
+            transform:scale(1.08);
+            box-shadow:0 8px 18px rgba(15,23,42,.16);
+        }
+
+        .large-image-preview{
+            max-width:100%;
+            max-height:70vh;
+            object-fit:contain;
+            border-radius:16px;
+            border:1px solid #E2E8F0;
+            background:#F8FAFC;
+        }
+
         .auto-alert {
             animation: fadeAlert 4s ease forwards;
         }
@@ -450,6 +686,28 @@
             padding:14px;
             border:1px solid #E2E8F0;
         }
+
+        .current-image,
+        .image-preview{
+
+            width:220px;
+            height:160px;
+
+            display:block;
+            margin:0 auto;
+
+            object-fit:cover;
+
+            border-radius:12px;
+            border:1px solid #E2E8F0;
+
+            background:#F8FAFC;
+        }
+
+        .edit-preview-wrapper,
+        .add-preview-wrapper{
+            text-align:center;
+}
 
         .modal-content{
             border-radius:24px;

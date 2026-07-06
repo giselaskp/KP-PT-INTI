@@ -7,7 +7,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <form action="{{ route('assets.store') }}" method="POST" class="asset-form" novalidate>
+            <form action="{{ route('assets.store') }}" method="POST" enctype="multipart/form-data" class="asset-form" novalidate>
                 @csrf
                 <div class="modal-alert alert alert-danger d-none mx-4 mt-3 mb-0"></div>
 
@@ -40,7 +40,27 @@
                             <option value="Inactive">Inactive</option>
                         </select>
                     </div>
-                </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Asset Image</label>
+
+                        <input
+                            type="file"
+                            name="image"
+                            class="d-none image-input"
+                            id="addAssetImage"
+                            accept="image/*">
+
+                        <label for="addAssetImage" class="upload-box">
+                            <i class="bi bi-cloud-arrow-up"></i>
+                            <h5>Drag & Drop image here</h5>
+                            <p>or click to choose file</p>
+                        </label>
+
+                        <small class="text-muted">
+                            Supported formats: JPG, JPEG, PNG. Max 5 MB.
+                        </small>
+                    </div>
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
