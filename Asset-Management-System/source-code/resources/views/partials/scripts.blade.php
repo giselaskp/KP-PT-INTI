@@ -1,6 +1,9 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
+    /* =====================================================
+       SIDEBAR
+    ===================================================== */
     function toggleSidebar() {
         document.getElementById('sidebar').classList.toggle('show');
         document.getElementById('sidebarOverlay').classList.toggle('show');
@@ -8,23 +11,29 @@
 </script>
 
 <script>
-function updateDate(){
-    const now = new Date();
-    const options = {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "2-digit"
-    };
-    document.getElementById("todayDate").textContent =
-        now.toLocaleDateString("en-US", options);
-}
+    /* =====================================================
+       DATE
+    ===================================================== */
+    function updateDate() {
+        const now = new Date();
+        const options = {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "2-digit"
+        };
+        document.getElementById("todayDate").textContent =
+            now.toLocaleDateString("en-US", options);
+    }
 
-updateDate();
-setInterval(updateDate, 60000);
+    updateDate();
+    setInterval(updateDate, 60000);
 </script>
 
 <script>
+    /* =====================================================
+       SEARCH
+    ===================================================== */
     const searchInput = document.getElementById("searchInput");
     const clearSearch = document.getElementById("clearSearch");
     const assetTableArea = document.getElementById("assetTableArea");
@@ -94,19 +103,23 @@ setInterval(updateDate, 60000);
 </script>
 
 <script>
-    setTimeout(() => {
-        document.querySelectorAll('.auto-alert').forEach(alert => {
-            const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
-            bsAlert.close();
-        });
-    }, 4200);
+    /* =====================================================
+       TOAST
+    ===================================================== */
+    document.querySelectorAll('.toast-custom').forEach(toastEl => {
+        const toast = new bootstrap.Toast(toastEl, { delay: 4000 });
+        toast.show();
+    });
 </script>
 
 <script>
+    /* =====================================================
+       VALIDATION
+    ===================================================== */
     const assetCodes = @json($assetCodes);
 
     document.querySelectorAll('.asset-form').forEach(form => {
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', function (e) {
             const alertBox = form.querySelector('.modal-alert');
             const assetCodeInput = form.querySelector('[name="asset_code"]');
 
@@ -151,6 +164,9 @@ setInterval(updateDate, 60000);
 </script>
 
 <script>
+    /* =====================================================
+       UPLOAD IMAGE
+    ===================================================== */
     function validateImage(file, input) {
         const maxSize = 5 * 1024 * 1024;
 
@@ -280,6 +296,9 @@ setInterval(updateDate, 60000);
 </script>
 
 <script>
+    /* =====================================================
+       IMAGE PREVIEW
+    ===================================================== */
     const imagePreviewModal = document.getElementById("imagePreviewModal");
 
     if (imagePreviewModal) {

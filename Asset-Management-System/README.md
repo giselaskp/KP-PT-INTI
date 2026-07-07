@@ -1,8 +1,6 @@
-# Week 1 - CRUD Laravel
+# Asset Management System
 
-## Objective
-
-Develop a web-based Asset Management System using Laravel and MySQL to manage company asset data through CRUD operations.
+Laravel-based Asset Management System developed during Internship at PT INTI (Persero).
 
 ---
 
@@ -29,6 +27,23 @@ Develop a web-based Asset Management System using Laravel and MySQL to manage co
 - Responsive Sidebar
 - Asset Table
 - Image Preview Modal
+
+---
+
+## Week Progress
+
+### Week 1
+- Laravel setup
+- Authentication
+- CRUD Asset
+- Dashboard UI
+
+### Week 2
+- Asset image upload
+- Drag & Drop upload
+- Image preview
+- Image viewer
+- UI improvements
 
 ---
 

@@ -1,0 +1,185 @@
+/* =====================================================
+   BODY / BACKGROUND
+===================================================== */
+body {
+    min-height: 100vh;
+    overflow: hidden;
+
+    background-image:
+        linear-gradient(rgba(41, 118, 255, .66), rgba(15, 46, 110, .86)),
+        radial-gradient(circle at top right, rgba(0, 198, 255, .25), transparent 45%),
+        var(--auth-bg-image);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+
+    background: radial-gradient(circle at top right, rgba(0,198,255,.22), transparent 40%);
+}
+
+/* =====================================================
+   LOGO
+===================================================== */
+.logo {
+    position: relative;
+    z-index: 2;
+
+    width: 125px;
+    transition: .3s;
+}
+
+.logo:hover {
+    transform: scale(1.05);
+}
+
+/* =====================================================
+   AUTH CARD
+===================================================== */
+.auth-card {
+    position: relative;
+    z-index: 2;
+
+    width: 470px;
+    border: 1px solid rgba(255, 255, 255, .35);
+    border-radius: 28px;
+
+    background: rgba(255, 255, 255, .23);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    box-shadow: 0 25px 70px rgba(0, 0, 0, .24);
+    animation: fadeUp .8s ease;
+    transition: .35s ease;
+}
+
+.auth-card.auth-card-wide {
+    width: 500px;
+}
+
+.auth-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, .28);
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(28px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =====================================================
+   TEXT
+===================================================== */
+.brand-badge {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 8px 18px;
+    border: 1px solid rgba(255,255,255,.24);
+    border-radius: 999px;
+
+    background: rgba(255,255,255,.18);
+    color: white;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .5px;
+}
+
+.title {
+    color: white;
+    font-weight: 800;
+    letter-spacing: .4px;
+}
+
+.subtitle {
+    color: rgba(255,255,255,.80);
+}
+
+.form-label {
+    color: white;
+}
+
+.helper-text {
+    color: rgba(255,255,255,.88);
+}
+
+/* =====================================================
+   FORM
+===================================================== */
+.input-group-text {
+    height: 48px;
+    border-right: none;
+
+    background: rgba(255,255,255,.94);
+    color: #64748B;
+}
+
+.form-control {
+    height: 48px;
+    border-left: none;
+    background: rgba(255,255,255,.94);
+}
+
+.form-control:focus {
+    border-color: #ced4da;
+    box-shadow: none;
+}
+
+.password-eye {
+    border-left: none;
+    cursor: pointer;
+}
+
+/* =====================================================
+   BUTTON
+===================================================== */
+.btn-auth {
+    height: 50px;
+    border: none;
+    border-radius: 14px;
+
+    background: linear-gradient(135deg, #214A9B, #2F63C7, #039BE5);
+    color: white;
+    font-weight: 700;
+    transition: .3s ease;
+}
+
+.btn-auth:hover {
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(3, 155, 229, .30);
+}
+
+.auth-link {
+    color: #7DD3FC;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.auth-link:hover {
+    color: white;
+}
+
+/* =====================================================
+   FOOTER
+===================================================== */
+footer {
+    position: relative;
+    z-index: 2;
+
+    color: white;
+    opacity: .9;
+    letter-spacing: .3px;
+}

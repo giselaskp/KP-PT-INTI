@@ -84,23 +84,47 @@
                     </td>
 
                     <td class="text-center">
-                        <button class="btn btn-sm btn-outline-primary"
-                                data-bs-toggle="modal"
-                                data-bs-target="#editAssetModal{{ $asset->id }}">
-                            <i class="bi bi-pencil"></i>
-                        </button>
+                        <div class="action-buttons">
+                            <button class="btn btn-sm btn-action btn-view"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#detailAssetModal{{ $asset->id }}">
+                                <i class="bi bi-eye"></i>
+                            </button>
 
-                        <button class="btn btn-sm btn-outline-danger"
-                                data-bs-toggle="modal"
-                                data-bs-target="#deleteModal{{ $asset->id }}">
-                            <i class="bi bi-trash"></i>
-                        </button>
+                            <button class="btn btn-sm btn-action btn-edit"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#editAssetModal{{ $asset->id }}">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+
+                            <button class="btn btn-sm btn-action btn-delete-outline"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal{{ $asset->id }}">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
                     </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="6" class="text-center text-muted py-4">
-                        Belum ada data asset.
+                    <td colspan="7" class="py-5">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">
+                                <i class="bi bi-inbox"></i>
+                            </div>
+
+                            @if(request('search'))
+                                <h6 class="fw-semibold mb-1">Asset tidak ditemukan</h6>
+                                <p class="text-muted mb-0">
+                                    Tidak ada hasil untuk pencarian "{{ request('search') }}"
+                                </p>
+                            @else
+                                <h6 class="fw-semibold mb-1">Belum ada data asset</h6>
+                                <p class="text-muted mb-0">
+                                    Klik tombol "Add Asset" untuk menambahkan asset pertama kamu.
+                                </p>
+                            @endif
+                        </div>
                     </td>
                 </tr>
             @endforelse
@@ -121,6 +145,91 @@
 @endif
 
 @foreach($assets as $asset)
+
+    <!-- Detail Modal -->
+    <div class="modal fade" id="detailAssetModal{{ $asset->id }}" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4">
+
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">Asset Detail</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        @if($asset->image)
+                            <img
+                                src="{{ asset('storage/' . $asset->image) }}"
+                                alt="{{ $asset->asset_name }}"
+                                class="detail-image">
+                        @else
+                            <div class="detail-image-placeholder mx-auto">
+                                <i class="bi bi-image"></i>
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="detail-list">
+                        <div class="detail-row">
+                            <span class="detail-label">Asset ID</span>
+                            <span class="detail-value">{{ $asset->asset_code }}</span>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="detail-label">Asset Name</span>
+                            <span class="detail-value">{{ $asset->asset_name }}</span>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="detail-label">Department</span>
+                            <span class="detail-value">{{ $asset->department }}</span>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="detail-label">Location</span>
+                            <span class="detail-value">{{ $asset->location }}</span>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="detail-label">Status</span>
+                            <span class="detail-value">
+                                @if($asset->status == 'Active')
+                                    <span class="badge-active badge-status">Active</span>
+                                @elseif($asset->status == 'Maintenance')
+                                    <span class="badge bg-warning text-dark rounded-pill px-3 py-2 badge-status">
+                                        Maintenance
+                                    </span>
+                                @else
+                                    <span class="badge bg-secondary rounded-pill px-3 py-2 badge-status">
+                                        Inactive
+                                    </span>
+                                @endif
+                            </span>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="detail-label">Added On</span>
+                            <span class="detail-value">{{ $asset->created_at->format('d M Y, H:i') }}</span>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="detail-label">Last Updated</span>
+                            <span class="detail-value">{{ $asset->updated_at->format('d M Y, H:i') }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light modal-action-btn" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-main modal-action-btn" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#editAssetModal{{ $asset->id }}">
+                        <i class="bi bi-pencil me-1"></i> Edit
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
 
     <!-- Edit Modal -->
     <div class="modal fade" id="editAssetModal{{ $asset->id }}" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
@@ -230,7 +339,7 @@
             <div class="modal-content border-0 rounded-4 shadow">
 
                 <div class="modal-header border-0 pb-0">
-                    <h4 class="modal-title fw-bold text-danger">
+                    <h4 class="modal-title fw-bold">
                         Delete Asset
                     </h4>
                     <button class="btn-close" data-bs-dismiss="modal"></button>
